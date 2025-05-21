@@ -40,18 +40,20 @@ export function FiltersSidebar() {
           <FilterIcon /> Filters
         </span>
         <button
-          className="bg-yellow-400 px-4 py-2 rounded font-semibold"
+          className="bg-yellow-400 text-black px-4 py-2 rounded font-semibold"
           onClick={() => setOpen(true)}
         >
           Open Filters
         </button>
       </div>
-      {/* Sidebar for desktop, drawer for mobile */}
+      {/* Sidebar for desktop, full overlay for mobile */}
       <aside
         className={`
-          bg-[#181818] text-white shadow-lg p-0
-          md:static md:block md:w-64 md:bg-[#181818] md:shadow-none
-          fixed inset-y-0 left-0 z-30 w-72 transform transition-transform duration-300
+        text-white shadow-lg p-0
+          md:static md:block md:w-64 md:shadow-none
+          fixed z-40
+          ${open ? 'inset-0 w-full h-full' : 'inset-y-0 left-0 w-72'}
+          transform transition-transform duration-300
           ${open ? 'translate-x-0' : '-translate-x-full'}
           md:translate-x-0
           flex flex-col
@@ -59,7 +61,7 @@ export function FiltersSidebar() {
         style={open ? {} : {}}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-6 border-b border-[#232323] sticky top-0 bg-[#181818] z-10">
+        <div className="flex items-center justify-between px-6 py-6 border-b border-[#232323] bg-[#131313] sticky top-0 z-10">
           <span className="font-bold text-lg flex items-center gap-2">
             <FilterIcon /> Filters
           </span>
@@ -72,7 +74,7 @@ export function FiltersSidebar() {
           </button>
         </div>
         {/* Filter sections */}
-        <nav className="flex-1 overflow-y-auto">
+        <nav className="flex-1 overflow-y-auto bg-[#131313]">
           {FILTERS.map((filter, idx) => (
             <button
               key={filter}
@@ -89,7 +91,7 @@ export function FiltersSidebar() {
       {/* Overlay for mobile drawer */}
       {open && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-30 z-20 md:hidden"
+          className="fixed inset-0 bg-black bg-opacity-30 z-30 md:hidden"
           onClick={() => setOpen(false)}
         />
       )}

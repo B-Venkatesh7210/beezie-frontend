@@ -6,55 +6,69 @@ import { useUserBalance } from '@/hooks/web3/useUserBalance';
 import { ItemCard } from '@/components/core/itemCard';
 import { FiltersSidebar } from './FiltersSidebar';
 import { formatPrice } from '@/utils/formatPrice';
-import { sortProducts } from '@/utils/sortProducts';
 import { formatUnits } from 'ethers';
+import { addresses } from '@/constants/addresses';
+import type { Product } from '@/types/product';
+import { useState } from 'react';
+
+// Helper to format user address
+function formatUserAddress(address: string) {
+  if (!address) return '';
+  return `${address.slice(0, 4)}....${address.slice(-4)}`;
+}
+
+// Handler for buy button
+function handleBuy(product: Product) {
+  console.log('Buy clicked:', product);
+}
+
+// Sort products by price
+function sortProducts(products: Product[], order: 'asc' | 'desc') {
+  return [...products].sort((a, b) => {
+    const diff = BigInt(a.priceUsdc) - BigInt(b.priceUsdc);
+    return order === 'asc' ? Number(diff) : -Number(diff);
+  });
+}
 
 export function ProductsList() {
-  // Fetch products, USDC decimals, and user balance
   const { data: products, isLoading, isError } = useProducts();
   const { data: decimals, isLoading: isDecimalsLoading, isError: isDecimalsError } = useUsdcDecimals();
   const { data: userBalance, isLoading: isBalanceLoading, isError: isBalanceError } = useUserBalance();
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
-  // Handler for buy button
-  const handleBuy = (product: any) => {
-    console.log('Buy clicked:', product);
-  };
-
-  // Loading state
   if (isLoading || isDecimalsLoading || isBalanceLoading) {
     return <div className="flex justify-center items-center min-h-screen">Loading products...</div>;
   }
-
-  // Error state
   if (isError || isDecimalsError || isBalanceError) {
     return <div className="flex justify-center items-center min-h-screen text-red-500">Failed to load products or USDC data.</div>;
   }
 
-  // Processed user balance
   const processedUsdcBalance = userBalance && decimals !== undefined
     ? Number(formatUnits(userBalance, decimals))
     : 0;
 
-  console.log('processedUsdcBalance', processedUsdcBalance);
-  
-  // Processed and sorted products
   const processedProducts = products && decimals !== undefined
-    ? sortProducts(products).map((product) => ({
+    ? sortProducts(products, sortOrder).map((product) => ({
         ...product,
         formattedPrice: formatPrice(product.priceUsdc, decimals),
         priceNumber: Number(formatPrice(product.priceUsdc, decimals)),
       }))
     : [];
 
+  const userAddress = addresses.user;
+  const formattedAddress = formatUserAddress(userAddress);
+
   return (
     <div className="relative">
-      <div className="hidden md:block fixed top-6 right-8 z-40 text-white font-bold text-lg drop-shadow-lg">
-        Balance: {processedUsdcBalance} USDC
+      {/* Fixed address and balance for desktop */}
+      <div className="hidden md:flex flex-col items-end fixed top-6 right-8 z-40">
+        <div className="text-white font-mono text-xs mb-1">Address: {formattedAddress}</div>
+        <div className="text-white font-bold text-lg drop-shadow-lg">Balance: {processedUsdcBalance} USDC</div>
       </div>
-      <div className="md:hidden sticky top-0 z-10 py-4 mb-2">
-        <div className="text-right font-bold text-lg text-white drop-shadow-lg">
-          Balance: {processedUsdcBalance} USDC
-        </div>
+      {/* Address and balance for mobile (flex row, separated) */}
+      <div className="md:hidden flex justify-between items-center py-4 mb-2">
+        <div className="font-mono text-xs text-white">Address: {formattedAddress}</div>
+        <div className="text-right font-bold text-lg text-white drop-shadow-lg">Balance: {processedUsdcBalance} USDC</div>
       </div>
       <div className="flex flex-col md:flex-row gap-0 md:gap-8 md:mt-12">
         {/* Sidebar (desktop) or drawer (mobile) */}
@@ -63,7 +77,18 @@ export function ProductsList() {
         </div>
         {/* Main content */}
         <div className="flex-1">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {/* Sort dropdown */}
+          <div className="flex justify-end mb-6 my-4">
+            <select
+              className="bg-[#181818] border border-[#232323] text-white text-sm rounded-lg px-4 py-2 appearance-none focus:outline-none cursor-pointer"
+              value={sortOrder}
+              onChange={e => setSortOrder(e.target.value as 'asc' | 'desc')}
+            >
+              <option value="asc">Price low to high</option>
+              <option value="desc">Price high to low</option>
+            </select>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
             {processedProducts.map((product) => (
               <ItemCard
                 key={product.id}
