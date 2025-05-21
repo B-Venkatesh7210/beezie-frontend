@@ -1,44 +1,66 @@
-## Front-End Test Task
+# Collectible Marketplace Front-End
 
-Welcome! This task is designed to simulate real work you’d be doing here.
+This project is a responsive front-end for a collectible trading card marketplace, built with Next.js (App Router), TypeScript, Tailwind CSS, and EVM/Web3 integration. It is designed to simulate a real-world NFT/collectible e-commerce experience, with a focus on clean UI, responsiveness, and blockchain integration.
 
-### Tech Stack
+## Features
 
-Use this stack (already included in the repo):
+- **Product Listing:**
+  - Displays a grid of collectible trading cards fetched from an API.
+  - Each card shows an image, name, price (in USDC), and a buy button.
+  - Products are sorted by price (low to high or high to low) with a dropdown selector.
 
-- **Next.js** (App Router)
-- **Tailwind CSS**
-- **pnpm**
-- **TanStack Query**
-- **TypeScript**
-- **ethers v6**
-- **TypeChain**
+- **Filters Sidebar:**
+  - Responsive sidebar for filtering products by various attributes (Status, Set Name, Language, Year, Grader, Grade, Edition, Card Number, Card Type).
+  - Sidebar is always visible on desktop and becomes a full-screen drawer on mobile.
 
-### Objectives
+- **Web3 Integration:**
+  - Connects to the Flow EVM Testnet using ethers.js and TypeChain.
+  - Fetches and displays the user's USDC balance and wallet address.
+  - Disables the buy button for products the user cannot afford.
 
-The main objective is to build a responsive, well-documented, and maintainable products page.
+- **Responsive Design:**
+  - Fully responsive for desktop, tablet, and mobile views.
+  - UI closely matches the provided Figma design.
 
-Below are step-by-step instructions to complete the objective.
+- **Type Safety & Best Practices:**
+  - Built with TypeScript and strict typing (no `any` or `unknown` casting).
+  - Uses TanStack Query for data fetching and caching.
+  - Code is formatted with Prettier and well-commented where needed.
 
-1. Create `/src/hooks/products/useProducts.ts` and use TanStack Query to fetch product data from `/api/products`.
-2. Use the hook you've created in step 1 to load the products on the home page. Handle loading and error states.
-3. Create `/src/services/web3/contracts`, connect the USDC factory from TypeChain to the provider and the USDC address in `/src/constants/addresses.ts`, and export it.
-4. Create `/src/hooks/web3/useUsdcDecimals.ts` and use TanStack Query with the contract you've created in step 3 to get the number of decimals that the USDC token has.
-5. Use the hook you've created in step 2 to get the USDC decimals on the home page. Handle loading and error states.
-6. Define `processedProducts` on the home page. The items of this array should have their prices parsed to USDC using ethers and the decimals and be sorted by price low to high.
-7. Create `/src/components/core/itemCard.tsx` that returns an item card component that displays the item image, name, and price, and has a buy button that `console.log`s the item when clicked.
-8. Display the products in a grid layout on the home page.
-9. Create `/src/hooks/web3/useUserBalance.ts` and use TanStack Query with the contract you've created in step 3 to get the amount of USDC that the user wallet address in `/src/constants/addresses.ts` has.
-10. Define `processedUsdcBalance` on the home page. This value should have the USDC balance parsed to USDC using ethers and the decimals.
-11. Display the user's balance on the home page.
-12. Disable the buy buttons on the items that the user cannot afford.
+## Tech Stack
+- Next.js (App Router)
+- TypeScript
+- Tailwind CSS
+- ethers v6
+- TypeChain
+- TanStack Query
+- pnpm
 
-### Rules
+## Blockchain
+- **Network:** Flow EVM Testnet
+- **USDC Contract:** Connected via TypeChain and ethers.js
 
-- Do not install any new packages such as Axios.
-- The project must be able to build successfully using `pnpm build`.
-- The page must be responsive for desktop, mobile, and tablets.
-- The page must follow the Figma design.
-- The parts of code that could be confusing must be explained using comments.
-- The code must be formatted with Prettier.
-- The code must be type-safe and not use `any` or casting to `unknown`.
+## Getting Started
+1. Install dependencies:
+   ```bash
+   pnpm install
+   ```
+2. Run the development server:
+   ```bash
+   pnpm dev
+   ```
+3. Build for production:
+   ```bash
+   pnpm build
+   ```
+
+## Project Structure
+- `src/components/` — UI components (cards, filters, etc.)
+- `src/hooks/` — Custom hooks for products and web3
+- `src/services/` — Web3 contract and provider setup
+- `src/constants/` — Addresses and static data
+- `src/types/` — TypeScript types
+- `src/utils/` — Utility functions
+
+## License
+MIT
