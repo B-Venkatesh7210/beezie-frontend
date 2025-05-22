@@ -1,4 +1,5 @@
 import type { Product } from '@/types/product';
+import { useState } from 'react';
 
 interface ItemCardProps {
   product: Product;
@@ -11,13 +12,19 @@ interface ItemCardProps {
  * The buy button is disabled if the user cannot afford the item.
  */
 export function ItemCard({ product, disabled, onBuy }: ItemCardProps) {
+  const [imgLoaded, setImgLoaded] = useState(false);
+
   return (
     <div className="p-4 flex flex-col items-center w-full max-w-xs mx-auto rounded-2xl">
-      <div className="w-86 h-86 md:w-72 md:h-72 bg-white rounded-xl mb-4 flex items-center justify-center overflow-hidden">
+      <div className="w-48 h-56 bg-white rounded-xl mb-4 flex items-center justify-center overflow-hidden relative">
+        {!imgLoaded && (
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-200 animate-pulse" />
+        )}
         <img
           src={product.imageUrl}
           alt={product.name}
-          className="object-contain w-full h-full rounded-xl"
+          className={`object-contain w-full h-full rounded-xl transition-opacity duration-300 ${imgLoaded ? 'opacity-100' : 'opacity-0'}`}
+          onLoad={() => setImgLoaded(true)}
         />
       </div>
       <div className="text-white text-base font-medium text-center leading-tight mb-2">
@@ -28,7 +35,7 @@ export function ItemCard({ product, disabled, onBuy }: ItemCardProps) {
       </div>
       {onBuy && (
         <button
-          className={`w-full cursor-pointer py-2 rounded-lg font-bold text-base transition-colors duration-200 mt-auto
+          className={`w-full py-2 rounded-lg font-bold text-base transition-colors duration-200 mt-auto
             ${disabled ? 'bg-[#FFB800] opacity-50 cursor-not-allowed text-black' : 'bg-[#FFB800] hover:bg-yellow-400 text-black'}`}
           onClick={() => onBuy(product)}
           disabled={disabled}

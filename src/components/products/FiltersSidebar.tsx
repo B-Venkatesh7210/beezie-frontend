@@ -1,5 +1,5 @@
 "use client";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const FILTERS = [
   'Status',
@@ -32,6 +32,18 @@ function CloseIcon() {
 export function FiltersSidebar() {
   const [open, setOpen] = useState(false);
 
+  // Prevent background scroll when sidebar is open on mobile
+  useEffect(() => {
+    if (open) {
+      document.body.classList.add('overflow-hidden');
+    } else {
+      document.body.classList.remove('overflow-hidden');
+    }
+    return () => {
+      document.body.classList.remove('overflow-hidden');
+    };
+  }, [open]);
+
   return (
     <>
       {/* Mobile filter button */}
@@ -40,7 +52,7 @@ export function FiltersSidebar() {
           <FilterIcon /> Filters
         </span>
         <button
-          className="bg-yellow-400 text-black px-4 py-2 rounded font-semibold"
+          className="bg-yellow-400 px-4 py-2 rounded font-semibold text-black"
           onClick={() => setOpen(true)}
         >
           Open Filters
@@ -49,10 +61,10 @@ export function FiltersSidebar() {
       {/* Sidebar for desktop, full overlay for mobile */}
       <aside
         className={`
-        text-white shadow-lg p-0
-          md:static md:block md:w-64 md:shadow-none
+          bg-[#181818] text-white shadow-lg p-0
+          md:static md:block md:w-64 md:bg-[#181818] md:shadow-none
           fixed z-40
-          ${open ? 'inset-0 w-full h-full' : 'inset-y-0 left-0 w-72'}
+          ${open ? 'inset-0 w-full h-screen' : 'inset-y-0 left-0 w-72'}
           transform transition-transform duration-300
           ${open ? 'translate-x-0' : '-translate-x-full'}
           md:translate-x-0

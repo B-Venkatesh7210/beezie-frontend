@@ -37,7 +37,7 @@ export function ProductsList() {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
   if (isLoading || isDecimalsLoading || isBalanceLoading) {
-    return <div className="flex justify-center items-center min-h-screen">Loading products...</div>;
+    return <div className="flex justify-center items-center min-h-screen"></div>;
   }
   if (isError || isDecimalsError || isBalanceError) {
     return <div className="flex justify-center items-center min-h-screen text-red-500">Failed to load products or USDC data.</div>;
@@ -60,13 +60,8 @@ export function ProductsList() {
 
   return (
     <div className="relative">
-      {/* Fixed address and balance for desktop */}
-      <div className="hidden md:flex flex-col items-end fixed top-6 right-8 z-40">
-        <div className="text-white font-mono text-xs mb-1">Address: {formattedAddress}</div>
-        <div className="text-white font-bold text-lg drop-shadow-lg">Balance: {processedUsdcBalance} USDC</div>
-      </div>
       {/* Address and balance for mobile (flex row, separated) */}
-      <div className="md:hidden flex justify-between items-center py-4 mb-2">
+      <div className="md:hidden flex justify-between items-center pb-4 mb-2">
         <div className="font-mono text-xs text-white">Address: {formattedAddress}</div>
         <div className="text-right font-bold text-lg text-white drop-shadow-lg">Balance: {processedUsdcBalance} USDC</div>
       </div>
@@ -88,7 +83,7 @@ export function ProductsList() {
               <option value="desc">Price high to low</option>
             </select>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
+          <div className="grid-cols-1 w-full grid sm:grid-cols-1 md:grid-cols-2 lg:grid-col-3 xl:grid-cols-4 2xl:grid-cols-5 gap-x-6 gap-y-8">
             {processedProducts.map((product) => (
               <ItemCard
                 key={product.id}
